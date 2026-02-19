@@ -258,13 +258,13 @@ def three_js_car_inspection(status_data):
         }};
 
         // Create Minimalist Technical Car
-        const createTechCar = () => {
+        const createTechCar = () => {{
             const car = new THREE.Group();
             
             // Materiales base
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.2 });
-            const glassMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.4 });
-            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a });
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: 0x334155, metalness: 0.8, roughness: 0.2 }});
+            const glassMat = new THREE.MeshStandardMaterial({{ color: 0x94a3b8, transparent: true, opacity: 0.4 }});
+            const wheelMat = new THREE.MeshStandardMaterial({{ color: 0x0f172a }});
 
             // 1. CARROCERÍA (Cuerpo principal)
             const bodyMain = new THREE.Mesh(new THREE.BoxGeometry(4, 0.6, 1.8), bodyMat);
@@ -299,13 +299,13 @@ def three_js_car_inspection(status_data):
             // 6. NEUMÁTICOS (Mapping: neumaticos)
             const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32);
             const wheelPos = [[1.2, 0, 0.9], [1.2, 0, -0.9], [-1.2, 0, 0.9], [-1.2, 0, -0.9]];
-            wheelPos.forEach((p, i) => {
+            wheelPos.forEach((p, i) => {{
                 const w = new THREE.Mesh(wheelGeo, wheelMat);
                 w.position.set(...p);
                 w.rotation.x = Math.PI / 2;
                 w.name = "neumaticos_" + i;
                 car.add(w);
-            });
+            }});
 
             // 7. BAJOS (Mapping: bajos)
             const floor = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.1, 1.6), wheelMat);
@@ -314,7 +314,7 @@ def three_js_car_inspection(status_data):
             car.add(floor);
 
             // 8. INTERIOR (Visible por transparencia)
-            const seats = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 1.4), new THREE.MeshStandardMaterial({color: 0x475569}));
+            const seats = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 1.4), new THREE.MeshStandardMaterial({{color: 0x475569}}));
             seats.position.set(-0.2, 0.4, 0);
             seats.name = "tapiceria";
             car.add(seats);
@@ -324,7 +324,7 @@ def three_js_car_inspection(status_data):
             
             scene.add(car);
             loaderOverlay.style.display = 'none';
-        };
+        }};
 
         // Ejecutar creación directamente (sin esperas de red)
         createTechCar();
