@@ -291,7 +291,7 @@ def three_js_car_inspection(status_data):
         }};
 
         const loader = new THREE.GLTFLoader();
-        const modelUrl = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/ToyCar/ToyCar.glb';
+        const modelUrl = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/ToyCar/glTF-Binary/ToyCar.glb';
 
         loader.load(modelUrl, (gltf) => {{
             const model = gltf.scene;
