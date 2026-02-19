@@ -232,7 +232,8 @@ def three_js_car_inspection(status_data):
             'techo': ['roof', 'techo'],
             'kit': ['trunk', 'boot', 'kit'],
             'tapiceria': ['seat', 'interior', 'tapiceria'],
-            'testigos': ['dash', 'testigos']
+            'testigos': ['dash', 'testigos'],
+            'luces': ['head', 'tail', 'luces']
         }};
 
         const applyDamage = (node) => {{
@@ -327,15 +328,19 @@ def three_js_car_inspection(status_data):
             const headlightGeo = new THREE.BoxGeometry(0.1, 0.2, 0.4);
             const headL = new THREE.Mesh(headlightGeo, lightMat);
             headL.position.set(2, 0.7, 0.6);
+            headL.name = "luces_head_l";
             const headR = new THREE.Mesh(headlightGeo, lightMat);
             headR.position.set(2, 0.7, -0.6);
+            headR.name = "luces_head_r";
             car.add(headL, headR);
 
             // 9. DETALLES: LUCES TRASERAS
             const tailL = new THREE.Mesh(headlightGeo, tailLightMat);
             tailL.position.set(-2, 0.7, 0.6);
+            tailL.name = "luces_tail_l";
             const tailR = new THREE.Mesh(headlightGeo, tailLightMat);
             tailR.position.set(-2, 0.7, -0.6);
+            tailR.name = "luces_tail_r";
             car.add(tailL, tailR);
 
             // 10. DETALLES: RETROVISORES
@@ -583,7 +588,8 @@ def init_session():
             'bajos': 'Estado Correcto', 'testigos': 'Estado Correcto',
             'tapiceria': 'Estado Correcto', 'techo': 'Estado Correcto',
             'niveles': 'Estado Correcto', 'itv': 'Estado Correcto',
-            'kit': 'Estado Correcto', 'kilometraje': 'Estado Correcto'
+            'kit': 'Estado Correcto', 'kilometraje': 'Estado Correcto',
+            'luces': 'Estado Correcto'
         },
         'facturas': [],
         'contabilidad': {'ingresos': [], 'gastos': []},
@@ -925,7 +931,8 @@ def main():
                 ('neumaticos', '🛞 Neumáticos'), ('parabrisas', '🪟 Parabrisas'),
                 ('techo', '🏠 Techo / Capota'), ('niveles', '🧪 Niveles Motor'),
                 ('bajos', '🔧 Bajos del Vehículo'), ('kit', '🗃️ Kit Emergencia'),
-                ('testigos', '⚠️ Testigos Cuadro'), ('tapiceria', '💺 Tapicería')
+                ('testigos', '⚠️ Testigos Cuadro'), ('tapiceria', '💺 Tapicería'),
+                ('luces', '💡 Sistema de Luces')
             ]
             
             # Using 2 columns inside the form for compactness
