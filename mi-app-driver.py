@@ -223,15 +223,16 @@ def three_js_car_inspection(status_data):
         ground.receiveShadow = true;
         scene.add(ground);
 
-        // Map keywords to model parts
+        // Map keywords to model parts (Synchronized with createTechCar names)
         const colorMap = {{
-            'neumaticos': ['wheel', 'tire', 'rim', 'rubber'],
-            'parabrisas': ['glass', 'window', 'windshield', 'mirror'],
-            'bajos': ['chassis', 'under', 'bottom', 'floor'],
-            'niveles': ['engine', 'hood', 'front', 'motor'],
-            'techo': ['roof', 'top', 'ceiling'],
-            'kit': ['trunk', 'boot', 'rear', 'back'],
-            'tapiceria': ['seat', 'interior', 'leather', 'fabric']
+            'neumaticos': ['wheel', 'tire', 'neumaticos'],
+            'parabrisas': ['glass', 'window', 'parabrisas'],
+            'bajos': ['chassis', 'bajos', 'floor'],
+            'niveles': ['engine', 'hood', 'niveles'],
+            'techo': ['roof', 'techo'],
+            'kit': ['trunk', 'boot', 'kit'],
+            'tapiceria': ['seat', 'interior', 'tapiceria'],
+            'testigos': ['dash', 'testigos']
         }};
 
         const applyDamage = (node) => {{
@@ -248,12 +249,14 @@ def three_js_car_inspection(status_data):
             
             if (isDamaged) {{
                 node.material = new THREE.MeshStandardMaterial({{
-                    color: 0xef4444,
-                    metalness: 0.6,
+                    color: 0xff0000,
+                    metalness: 0.8,
                     roughness: 0.2,
-                    emissive: 0xef4444,
-                    emissiveIntensity: 0.3
+                    emissive: 0xff0000,
+                    emissiveIntensity: 0.5
                 }});
+                // Pulse effect setup
+                node.userData.isDamaged = true;
             }}
         }};
 
@@ -319,6 +322,12 @@ def three_js_car_inspection(status_data):
             seats.name = "tapiceria";
             car.add(seats);
 
+            // 9. SALPICADERO / TESTIGOS (Mapping: testigos)
+            const dash = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.2), new THREE.MeshStandardMaterial({{color: 0x1e293b}}));
+            dash.position.set(0.6, 0.5, 0);
+            dash.name = "testigos";
+            car.add(dash);
+
             // Aplicar peritaje a cada pieza
             car.traverse(applyDamage);
             
@@ -334,6 +343,15 @@ def three_js_car_inspection(status_data):
         function animate() {{
             requestAnimationFrame(animate);
             controls.update();
+
+            // Pulse effect for damaged parts
+            const time = Date.now() * 0.005;
+            scene.traverse((node) => {{
+                if (node.isMesh && node.userData.isDamaged) {{
+                    node.material.emissiveIntensity = 0.5 + Math.sin(time) * 0.3;
+                }}
+            }});
+
             renderer.render(scene, camera);
         }}
         animate();
