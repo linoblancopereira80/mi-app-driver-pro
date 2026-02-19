@@ -260,82 +260,109 @@ def three_js_car_inspection(status_data):
             }}
         }};
 
-        // Create Minimalist Technical Car
+        // Create Detailed Technical SUV
         const createTechCar = () => {{
             const car = new THREE.Group();
             
-            // Materiales base
-            const bodyMat = new THREE.MeshStandardMaterial({{ color: 0x334155, metalness: 0.8, roughness: 0.2 }});
-            const glassMat = new THREE.MeshStandardMaterial({{ color: 0x94a3b8, transparent: true, opacity: 0.4 }});
-            const wheelMat = new THREE.MeshStandardMaterial({{ color: 0x0f172a }});
+            // Materiales Premium
+            const bodyMat = new THREE.MeshStandardMaterial({{ color: 0x1e293b, metalness: 0.9, roughness: 0.1 }});
+            const glassMat = new THREE.MeshStandardMaterial({{ color: 0x0ea5e9, transparent: true, opacity: 0.3, metalness: 1, roughness: 0 }});
+            const wheelMat = new THREE.MeshStandardMaterial({{ color: 0x020617, roughness: 0.8 }});
+            const lightMat = new THREE.MeshStandardMaterial({{ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1 }});
+            const tailLightMat = new THREE.MeshStandardMaterial({{ color: 0x991b1b, emissive: 0xff0000, emissiveIntensity: 1 }});
 
-            // 1. CARROCERÍA (Cuerpo principal)
-            const bodyMain = new THREE.Mesh(new THREE.BoxGeometry(4, 0.6, 1.8), bodyMat);
-            bodyMain.position.y = 0.2;
-            bodyMain.name = "chassis_body";
-            car.add(bodyMain);
+            // 1. CHASIS BASE (Mapping: bajos)
+            const base = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.2, 1.9), wheelMat);
+            base.position.y = 0.1;
+            base.name = "bajos";
+            car.add(base);
 
-            // 2. TECHO (Mapping: techo)
-            const roof = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 1.6), bodyMat);
-            roof.position.set(-0.2, 0.75, 0);
-            roof.name = "techo";
-            car.add(roof);
+            // 2. CUERPO PRINCIPAL (SUV Shape)
+            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(4, 0.8, 1.8), bodyMat);
+            mainBody.position.y = 0.5;
+            mainBody.name = "chassis_main";
+            car.add(mainBody);
 
-            // 3. PARABRISAS Y LUNAS (Mapping: parabrisas)
-            const windshield = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.45, 1.7), glassMat);
-            windshield.position.set(-0.2, 0.75, 0);
-            windshield.name = "parabrisas";
-            car.add(windshield);
-
-            // 4. CAPÓ / MOTOR (Mapping: niveles)
-            const hood = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.75), bodyMat);
-            hood.position.set(1.4, 0.52, 0);
+            // 3. CAPÓ (Mapping: niveles)
+            const hood = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.7), bodyMat);
+            hood.position.set(1.4, 0.9, 0);
             hood.name = "niveles";
             car.add(hood);
 
-            // 5. MALETERO / KIT (Mapping: kit)
-            const boot = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 1.75), bodyMat);
-            boot.position.set(-1.6, 0.52, 0);
-            boot.name = "kit";
-            car.add(boot);
+            // 4. TECHO Y CABINA (Mapping: techo)
+            const upperBody = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.7, 1.6), bodyMat);
+            upperBody.position.set(-0.4, 1.25, 0);
+            upperBody.name = "techo";
+            car.add(upperBody);
 
-            // 6. NEUMÁTICOS (Mapping: neumaticos)
-            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32);
-            const wheelPos = [[1.2, 0, 0.9], [1.2, 0, -0.9], [-1.2, 0, 0.9], [-1.2, 0, -0.9]];
+            // 5. CRISTALES (Mapping: parabrisas)
+            const windows = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.6, 1.65), glassMat);
+            windows.position.set(-0.4, 1.25, 0);
+            windows.name = "parabrisas";
+            car.add(windows);
+
+            // 6. MALETERO (Mapping: kit)
+            const trunk = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 1.7), bodyMat);
+            trunk.position.set(-1.7, 0.85, 0);
+            trunk.name = "kit";
+            car.add(trunk);
+
+            // 7. NEUMÁTICOS Y LLANTAS (Mapping: neumaticos)
+            const wheelGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.35, 32);
+            const tireGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.37, 32);
+            const wheelPos = [[1.2, 0.1, 0.95], [1.2, 0.1, -0.95], [-1.4, 0.1, 0.95], [-1.4, 0.1, -0.95]];
+            
             wheelPos.forEach((p, i) => {{
-                const w = new THREE.Mesh(wheelGeo, wheelMat);
-                w.position.set(...p);
-                w.rotation.x = Math.PI / 2;
-                w.name = "neumaticos_" + i;
-                car.add(w);
+                const wheelGroup = new THREE.Group();
+                const tire = new THREE.Mesh(wheelGeo, wheelMat);
+                const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.38, 12), new THREE.MeshStandardMaterial({{color: 0x94a3b8, metalness: 1}}));
+                wheelGroup.add(tire, rim);
+                wheelGroup.position.set(...p);
+                wheelGroup.rotation.x = Math.PI / 2;
+                wheelGroup.name = "neumaticos_" + i;
+                car.add(wheelGroup);
             }});
 
-            // 7. BAJOS (Mapping: bajos)
-            const floor = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.1, 1.6), wheelMat);
-            floor.position.y = -0.1;
-            floor.name = "bajos";
-            car.add(floor);
+            // 8. DETALLES: FAROS
+            const headlightGeo = new THREE.BoxGeometry(0.1, 0.2, 0.4);
+            const headL = new THREE.Mesh(headlightGeo, lightMat);
+            headL.position.set(2, 0.7, 0.6);
+            const headR = new THREE.Mesh(headlightGeo, lightMat);
+            headR.position.set(2, 0.7, -0.6);
+            car.add(headL, headR);
 
-            // 8. INTERIOR (Visible por transparencia)
-            const seats = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 1.4), new THREE.MeshStandardMaterial({{color: 0x475569}}));
-            seats.position.set(-0.2, 0.4, 0);
-            seats.name = "tapiceria";
-            car.add(seats);
+            // 9. DETALLES: LUCES TRASERAS
+            const tailL = new THREE.Mesh(headlightGeo, tailLightMat);
+            tailL.position.set(-2, 0.7, 0.6);
+            const tailR = new THREE.Mesh(headlightGeo, tailLightMat);
+            tailR.position.set(-2, 0.7, -0.6);
+            car.add(tailL, tailR);
 
-            // 9. SALPICADERO / TESTIGOS (Mapping: testigos)
-            const dash = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.2), new THREE.MeshStandardMaterial({{color: 0x1e293b}}));
-            dash.position.set(0.6, 0.5, 0);
+            // 10. DETALLES: RETROVISORES
+            const mirrorGeo = new THREE.BoxGeometry(0.1, 0.15, 0.25);
+            const mirL = new THREE.Mesh(mirrorGeo, bodyMat);
+            mirL.position.set(0.6, 1, 0.95);
+            const mirR = new THREE.Mesh(mirrorGeo, bodyMat);
+            mirR.position.set(0.6, 1, -0.95);
+            car.add(mirL, mirR);
+
+            // 11. INTERIOR (Mapping: tapiceria)
+            const interior = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.5, 1.4), new THREE.MeshStandardMaterial({{color: 0x334155}}));
+            interior.position.set(-0.3, 0.8, 0);
+            interior.name = "tapiceria";
+            car.add(interior);
+
+            // 12. SALPICADERO (Mapping: testigos)
+            const dash = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.35, 1.3), new THREE.MeshStandardMaterial({{color: 0x000000}}));
+            dash.position.set(0.7, 0.9, 0);
             dash.name = "testigos";
             car.add(dash);
 
-            // Aplicar peritaje a cada pieza
             car.traverse(applyDamage);
-            
             scene.add(car);
             loaderOverlay.style.display = 'none';
         }};
 
-        // Ejecutar creación directamente (sin esperas de red)
         createTechCar();
 
         camera.position.set(5, 3, 5);
