@@ -1,0 +1,16 @@
+[package]
+name = "security_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "security_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
+argon2 = "0.5"
+aes-gcm = "0.10"
+rand = "0.8"
+base64 = "0.21"
+getrandom = { version = "0.2", features = ["js"] } # In case we ever use it in WASM, but good for rand
